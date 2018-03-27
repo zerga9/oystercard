@@ -29,6 +29,7 @@ class Oystercard
 
   def touch_out
     deduct(MINIMUM_CHARGE)
+    @entry_station = nil 
   end
 
   private
