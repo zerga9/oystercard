@@ -13,4 +13,8 @@ class Oystercard
     @balance = @balance + value
   end
 
+  def deduct(fare)
+    @balance = @balance - fare
+  end
+
 end
