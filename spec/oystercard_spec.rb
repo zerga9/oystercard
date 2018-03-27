@@ -4,6 +4,10 @@ describe Oystercard do
   it 'has a balance of zero' do
     expect(subject.balance).to eq(0)
   end
+  it 'has an empty list of journeys by default' do
+    expect(subject.journeys).to be_empty
+  end
+
   describe '#top-up' do
     it { is_expected.to respond_to(:top_up).with(1).argument }
     it 'can top up balance' do
@@ -37,16 +41,29 @@ describe Oystercard do
 
   end
   describe '#touch_out' do
+    let(:station) { double :station }
+    let(:exit_station) { double :station }
+    let(:journey) { {station: station, exit_station: exit_station} }
+    it 'remembers exit station' do
+      subject.top_up(Oystercard::BALANCE_LIMIT)
+      subject.touch_in(station)
+      subject.touch_out(exit_station)
+      expect(subject.exit_station).to eq exit_station
+    end
     it 'can touch out' do
       subject.top_up(Oystercard::BALANCE_LIMIT)
-      subject.touch_out
+      subject.touch_out(exit_station)
       expect(subject).not_to be_in_journey
     end
     it 'deducts minimum charge from balance' do
-      subject.touch_out
-      expect{ subject.touch_out }.to change{ subject.balance }.by(-Oystercard::MINIMUM_CHARGE)
+      subject.touch_out(exit_station)
+      expect{ subject.touch_out(exit_station) }.to change{ subject.balance }.by(-Oystercard::MINIMUM_CHARGE)
     end
-
-  end
-
+    it 'stores a journey' do
+      subject.top_up(Oystercard::BALANCE_LIMIT)
+      subject.touch_in(station)
+      subject.touch_out(exit_station)
+      expect(subject.journeys).to include journey
+    end
+end
 end
