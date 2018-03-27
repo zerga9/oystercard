@@ -20,7 +20,21 @@ describe Oystercard do
     it 'deducts fare from balance' do
       subject.top_up(20)
       expect{ subject.deduct 3 }.to change{ subject.balance }.by -3
-    end 
+    end
+  end
+  it 'is initially not in journey' do
+    expect(subject).not_to be_in_journey
+  end
+  it 'can touch in' do
+    subject.top_up(Oystercard::BALANCE_LIMIT)
+    subject.touch_in
+    expect(subject).to be_in_journey
+  end
+  it 'can touch out' do
+    subject.top_up(Oystercard::BALANCE_LIMIT)
+    subject.touch_in
+    subject.touch_out
+    expect(subject).not_to be_in_journey
   end
 
 end
