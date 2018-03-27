@@ -22,19 +22,28 @@ describe Oystercard do
       expect{ subject.deduct 3 }.to change{ subject.balance }.by -3
     end
   end
+
   it 'is initially not in journey' do
     expect(subject).not_to be_in_journey
   end
-  it 'can touch in' do
-    subject.top_up(Oystercard::BALANCE_LIMIT)
-    subject.touch_in
-    expect(subject).to be_in_journey
+  describe '#touch_in' do
+    it 'can touch in' do
+      subject.top_up(Oystercard::BALANCE_LIMIT)
+      subject.touch_in
+      expect(subject).to be_in_journey
+    end
+    it "doesn't touch in if below minimum balance" do
+#      subject.balance == 0, subject has already balance 0
+      expect{ subject.touch_in }.to raise_error "Insufficient balance to touch in"
+    end
   end
-  it 'can touch out' do
-    subject.top_up(Oystercard::BALANCE_LIMIT)
-    subject.touch_in
-    subject.touch_out
-    expect(subject).not_to be_in_journey
+  describe '#touch_out' do
+    it 'can touch out' do
+      subject.top_up(Oystercard::BALANCE_LIMIT)
+      subject.touch_in
+      subject.touch_out
+      expect(subject).not_to be_in_journey
+    end
   end
 
 end
