@@ -6,16 +6,17 @@ class Journey
 
 
 
-  def initialize(entry_station = nil, end_station = nil)
+  def initialize
+    @entry_station = nil
+    @end_station = nil
+  end
+
+  def start_journey(entry_station)
     @entry_station = entry_station
-    @end_station = end_station
-
-
   end
 
   def finish(end_station)
     @end_station = end_station
-    return self
   end
 
   def fare
