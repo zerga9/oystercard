@@ -27,6 +27,8 @@ describe Journey do
     end
 
     it 'calculates a fare' do
+      allow(entry_station).to receive(:zone).and_return(1)
+      allow(end_station).to receive(:zone).and_return(1)
       subject.start_journey(entry_station)
       subject.finish(end_station)
       expect(subject.fare).to eq 1
@@ -36,5 +38,21 @@ describe Journey do
       subject.start_journey(entry_station)
       subject.finish(end_station)
         expect(subject).to be_complete
+      end
+
+    it 'calculates a fare for zone 1 to zone 1' do
+        expect(entry_station).to receive(:zone).and_return(1)
+        expect(end_station).to receive(:zone).and_return(1)
+        subject.start_journey(entry_station)
+        subject.finish(end_station)
+        expect(subject.fare).to eq 1
+      end
+
+      it "calculates a fare for different zones" do
+        expect(entry_station).to receive(:zone).and_return(1)
+        expect(end_station).to receive(:zone).and_return(4)
+        subject.start_journey(entry_station)
+        subject.finish(end_station)
+        expect(subject.fare).to eq 4
       end
   end

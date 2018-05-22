@@ -1,3 +1,5 @@
+require_relative './station'
+
 class Journey
   PENALTY_FARE = 6
   MINIMUM_CHARGE = 1
@@ -9,19 +11,26 @@ class Journey
   def initialize
     @entry_station = nil
     @end_station = nil
+    @charge = MINIMUM_CHARGE
   end
 
-  def start_journey(entry_station)
+  def start_journey(entry_station = Station.new(name, zone))
     @entry_station = entry_station
   end
 
-  def finish(end_station)
+  def finish(end_station=Station.new(name, zone))
     @end_station = end_station
   end
 
   def fare
-    complete? ? MINIMUM_CHARGE : PENALTY_FARE
+    !complete? ? @charge = PENALTY_FARE : @charge += zone_charge
   end
+
+ def zone_charge
+   (entry_station.zone - end_station.zone).abs
+ end
+
+
 
   def complete?
     !(@entry_station.nil? || @end_station.nil?)
